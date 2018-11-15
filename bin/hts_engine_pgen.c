@@ -270,7 +270,11 @@ int main(int argc, char **argv)
    /* Save duration */
    tmpfn = malloc(sizeof(char) * (strlen(output_directory) + strlen(labfn)));
    sprintf(tmpfn, "%s/%s.%s", output_directory, basename(labfn), "dur");
-   tmpfp = fopen(tmpfn, "wt");
+   if ((tmpfp = fopen(tmpfn, "wt")) <= 0) {
+     fprintf(stderr, "couldn't open \"%s\": ", tmpfn);
+     perror("");
+     exit(EXIT_FAILURE);
+   }
    HTS_Engine_save_label(&engine, tmpfp);
    fclose(tmpfp);
 
@@ -279,7 +283,8 @@ int main(int argc, char **argv)
    for (i=0; i<nstream; i++) {
      sprintf(tmpfn, "%s/%s.%d", output_directory, basename(labfn), i);
      if ((tmpfp = fopen(tmpfn, "wb")) <= 0) {
-       fprintf(stderr, "couldn't open \"%s\"", tmpfn);
+       fprintf(stderr, "couldn't open \"%s\": ", tmpfn);
+       perror("");
        exit(EXIT_FAILURE);
      }
      HTS_Engine_save_generated_parameter(&engine, i, tmpfp);
