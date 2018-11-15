@@ -423,6 +423,9 @@ size_t HTS_Engine_get_total_frame(HTS_Engine * engine);
 /* HTS_Engine_get_nsamples: get number of samples */
 size_t HTS_Engine_get_nsamples(HTS_Engine * engine);
 
+/* Helper to provide just the parameter generation structure without the vocoder part */
+HTS_Boolean HTS_Engine_MinimalGStreamSet_create(HTS_GStreamSet * gss, HTS_PStreamSet * pss, size_t fperiod);
+
 /* HTS_Engine_get_generated_parameter: output generated parameter */
 double HTS_Engine_get_generated_parameter(HTS_Engine * engine, size_t stream_index, size_t frame_index, size_t vector_index);
 
