@@ -72,6 +72,7 @@ void usage(void)
    fprintf(stderr, "  options:                                                                   [  def][ min-- max]\n");
    fprintf(stderr, "    -m  htsvoice   : HTS voice files                                         [  N/A]\n");
    fprintf(stderr, "    -ot s          : filename of output trace information                    [  N/A]\n");
+   fprintf(stderr, "    -os            : dump state duration instead of phone duration           [  N/A]\n");
    fprintf(stderr, "    -vp            : use phoneme alignment for duration                      [  N/A]\n");
    fprintf(stderr, "    -r  f          : speech speed rate                                       [  1.0][ 0.0--    ]\n");
    fprintf(stderr, "    -fm f          : additional half-tone                                    [  0.0][    --    ]\n");
@@ -94,6 +95,9 @@ int main(int argc, char **argv)
    double f;
    int nstream;
 
+   /* Some flag helper */
+   char dump_state = FALSE;
+
    /* hts_engine API */
    HTS_Engine engine;
 
@@ -109,7 +113,8 @@ int main(int argc, char **argv)
    char *tmpfn = NULL;
 
    /* output file pointers */
-   FILE *tmpfp, *tracefp = NULL;
+   FILE *tmpfp = NULL;
+   FILE *tracefp = NULL;
 
    /* interpolation weights */
    size_t num_interpolation_weights;
@@ -162,6 +167,10 @@ int main(int argc, char **argv)
             break;
          case 'o':
             switch (*(*argv + 2)) {
+            case 's':
+              dump_state = TRUE;
+              argc++; /* To cancel the --argc */
+              break;
             case 't':
                tracefp = fopen(*++argv, "wt");
                break;
@@ -275,7 +284,11 @@ int main(int argc, char **argv)
      perror("");
      exit(EXIT_FAILURE);
    }
-   HTS_Engine_save_label(&engine, tmpfp);
+   if (dump_state) {
+     HTS_Engine_save_label_state(&engine, tmpfp);
+   } else {
+     HTS_Engine_save_label_ph(&engine, tmpfp);
+   }
    fclose(tmpfp);
 
    /* Save parameters */

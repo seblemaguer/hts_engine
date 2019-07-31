@@ -453,8 +453,11 @@ HTS_Boolean HTS_Engine_generate_sample_sequence(HTS_Engine * engine);
 /* HTS_Engine_save_information: save trace information */
 void HTS_Engine_save_information(HTS_Engine * engine, FILE * fp);
 
-/* HTS_Engine_save_label: save label with time */
-void HTS_Engine_save_label(HTS_Engine * engine, FILE * fp);
+/* HTS_Engine_save_label_state: save label with time (state level)*/
+void HTS_Engine_save_label_state(HTS_Engine * engine, FILE * fp);
+
+/* HTS_Engine_save_label_ph: save label with time (phone level) */
+void HTS_Engine_save_label_ph(HTS_Engine * engine, FILE * fp);
 
 /* HTS_Engine_save_generated_parameter: save generated parameter */
 void HTS_Engine_save_generated_parameter(HTS_Engine * engine, size_t stream_index, FILE * fp);

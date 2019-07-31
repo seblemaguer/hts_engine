@@ -683,8 +683,41 @@ void HTS_Engine_save_information(HTS_Engine * engine, FILE * fp)
    }
 }
 
-/* HTS_Engine_save_label: save label with time */
-void HTS_Engine_save_label(HTS_Engine * engine, FILE * fp)
+/* HTS_Engine_save_label_state: save label with time (state level)*/
+void HTS_Engine_save_label_state(HTS_Engine * engine, FILE * fp)
+{
+   size_t i, j;
+   size_t frame, state, duration;
+
+   HTS_Label *label = &engine->label;
+   HTS_SStreamSet *sss = &engine->sss;
+   size_t nstate = HTS_ModelSet_get_nstate(&engine->ms);
+   double rate = engine->condition.fperiod * 1.0e+07 / engine->condition.sampling_frequency;
+
+   for (i = 0, state = 0, frame = 0; i < HTS_Label_get_size(label); i++) {
+     /* Dump first state with actual phone label */
+     duration = HTS_SStreamSet_get_duration(sss, state++);
+     fprintf(fp, "%lu %lu %s[%d] %s\n",
+             (unsigned long) (frame * rate),
+             (unsigned long) ((frame + duration) * rate),
+             HTS_Label_get_string(label, i), 2,
+             HTS_Label_get_string(label, i));
+     frame += duration;
+
+     /* Dump the other states */
+     for (j = 1; j < nstate; j++) {
+       duration = HTS_SStreamSet_get_duration(sss, state++);
+       fprintf(fp, "%lu %lu %s[%d]\n",
+               (unsigned long) (frame * rate),
+               (unsigned long) ((frame + duration) * rate),
+               HTS_Label_get_string(label, i), j+2);
+       frame += duration;
+     }
+   }
+}
+
+/* HTS_Engine_save_label_ph: save label with time (phone level) */
+void HTS_Engine_save_label_ph(HTS_Engine * engine, FILE * fp)
 {
    size_t i, j;
    size_t frame, state, duration;

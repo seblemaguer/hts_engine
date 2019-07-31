@@ -302,7 +302,7 @@ int main(int argc, char **argv)
    if (tracefp != NULL)
       HTS_Engine_save_information(&engine, tracefp);
    if (durfp != NULL)
-      HTS_Engine_save_label(&engine, durfp);
+      HTS_Engine_save_label_ph(&engine, durfp);
    if (rawfp)
       HTS_Engine_save_generated_speech(&engine, rawfp);
    if (wavfp)
